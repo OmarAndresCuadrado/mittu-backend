@@ -67,12 +67,6 @@ public class TeacherEntity implements Serializable {
 
 	private String picture;
 
-	private String bank;
-
-	private String bankAccountNumber;
-
-	private String identificationNumber;
-
 	private Integer time;
 
 	private Double hourCost;
@@ -89,6 +83,8 @@ public class TeacherEntity implements Serializable {
 	private Double calification;
 
 	private Integer countStudent;
+
+	private String city;
 
 	@NotEmpty(message = "no puede estar vacio")
 	@Size(min = 12, max = 50, message = "el tamaño tiene que estar entre 12 y 50")
@@ -269,30 +265,6 @@ public class TeacherEntity implements Serializable {
 		this.retirements = retirements;
 	}
 
-	public String getBank() {
-		return bank;
-	}
-
-	public void setBank(String bank) {
-		this.bank = bank;
-	}
-
-	public String getBankAccountNumber() {
-		return bankAccountNumber;
-	}
-
-	public void setBankAccountNumber(String bankAccountNumber) {
-		this.bankAccountNumber = bankAccountNumber;
-	}
-
-	public String getIdentificationNumber() {
-		return identificationNumber;
-	}
-
-	public void setIdentificationNumber(String identificationNumber) {
-		this.identificationNumber = identificationNumber;
-	}
-
 	public Integer getTime() {
 		return time;
 	}
@@ -355,6 +327,14 @@ public class TeacherEntity implements Serializable {
 
 	public void setCountStudent(Integer countStudent) {
 		this.countStudent = countStudent;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	/**

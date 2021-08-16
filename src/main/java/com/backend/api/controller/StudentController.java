@@ -140,12 +140,15 @@ public class StudentController {
 			String nombre = studentEntity.getName();
 			String apellido = studentEntity.getLastName();
 			String email = studentEntity.getEmail();
+			String city = studentEntity.getCity();
 			userStudent.setUsername(username);
 			userStudent.setPassword(password);
 			userStudent.setEnabled(true);
 			userStudent.setName(nombre);
 			userStudent.setLastName(apellido);
 			userStudent.setEmail(email);
+			userStudent.setMoney(Double.valueOf(0));
+			userStudent.setCity(city);
 			try {
 				finalUsuario = usuarioService.saveUser(userStudent);
 			} catch (DataAccessException e) {
@@ -158,6 +161,9 @@ public class StudentController {
 			studentEntity.setIdUser(stuendtId);
 			studentEntity.setEnabled(true);
 			studentEntity.setEnabledPlatform(true);
+			studentEntity.setCity(city);
+			studentEntity.setMoney(Double.valueOf(0));
+			studentEntity.setTermsAndConditions(true);
 			studentCreated = studentService.saveStudent(studentEntity);
 			usuarioService.findStudentCreatedAndSetRole(stuendtId);
 			studentService.sentEmailToStudent(studentEntity, cleanPassword);
@@ -170,6 +176,8 @@ public class StudentController {
 			log.info(executionTime() + "-Error no se han podido conectar con la base de datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		studentCreated = null;
 
 		return new ResponseEntity<StudentEntity>(studentCreated, HttpStatus.OK);
 	}

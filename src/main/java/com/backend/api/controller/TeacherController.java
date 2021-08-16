@@ -63,7 +63,7 @@ public class TeacherController {
 
 	@Autowired
 	private IGrupalCourseServiceInterface grupalCourseService;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
@@ -146,12 +146,16 @@ public class TeacherController {
 			String nombre = teacherEntity.getName();
 			String apellido = teacherEntity.getLastName();
 			String email = teacherEntity.getEmail();
+			String city = teacherEntity.getCity();
+			userTeacher.setCity(city);
 			userTeacher.setUsername(username);
 			userTeacher.setPassword(password);
 			userTeacher.setEnabled(false);
 			userTeacher.setName(nombre);
 			userTeacher.setLastName(apellido);
 			userTeacher.setEmail(email);
+			userTeacher.setMoney(Double.valueOf(0));
+
 			try {
 				finalUsuario = usuarioService.saveUser(userTeacher);
 				teacherService.sentEmailToTeacher(teacherEntity, cleanPassword);
@@ -167,6 +171,17 @@ public class TeacherController {
 			teacherEntity.setEnabled(false);
 			teacherEntity.setEnabledPlatform(false);
 			teacherEntity.setMeetUrl("");
+			teacherEntity.setProfile("Amateur");
+			teacherEntity.setMoney(Double.valueOf(0));
+			teacherEntity.setCity(city);
+			teacherEntity.setTermsAndConditions(true);
+			teacherEntity.setBusy(true);
+			teacherEntity.setCalification(Double.valueOf(0));
+			teacherEntity.setCountStudent(0);
+			teacherEntity.setDescription("");
+			teacherEntity.setEducation("");
+			teacherEntity.setHourCost(Double.valueOf(0));
+			teacherEntity.setPicture("");
 			teacherCreated = teacherService.saveTeacher(teacherEntity);
 			usuarioService.findTeacherCreatedAndSetRole(teacherId);
 			System.out.println("id del profesor al que le envio la actualizacion de tiempo " + teacherCreated.getId());
@@ -340,6 +355,10 @@ public class TeacherController {
 	@GetMapping("/teacher/upload/image/{pictureTeacherName:.+}")
 	public ResponseEntity<Resource> showPictureCourse(@PathVariable String pictureTeacherName) {
 
+		if(pictureTeacherName.isEmpty() || pictureTeacherName.length() <= 0) {
+			pictureTeacherName = "default.png";
+		}
+		
 		Path picturePath = Paths.get("teacher-image").resolve(pictureTeacherName).toAbsolutePath();
 		Resource resource = null;
 
@@ -390,8 +409,7 @@ public class TeacherController {
 	public void updateTeacherCalification(@RequestBody ProfileClass profileClass) {
 		teacherService.updateProfileTeacher(profileClass.getProfile(), profileClass.getTeacherId());
 	}
-	
-	
+
 	@GetMapping("/teacher/get/information")
 	public List<TeacherInformationClass> getTeachersInformation() {
 		List<TeacherInformationClass> bodyResponseList = new ArrayList<TeacherInformationClass>();
@@ -410,15 +428,15 @@ public class TeacherController {
 			bodyResponse.setCalification(obj.getCalification());
 			bodyResponse.setCountStudent(obj.getCountStudent());
 			bodyResponse.setEmail(obj.getEmail());
-			bodyResponse.setCourses(obj.getCourses());	
+			bodyResponse.setCourses(obj.getCourses());
 			bodyResponse.setBusy(obj.getBusy());
 			List<GrupalCourseEntity> grupalCoursesFound = grupalCourseService.getGrupalCoursesByTeacherId(obj.getId());
-			grupalCoursesFound.forEach(objCourse  -> objCourse.setStudentes(new ArrayList<StudentEntity>()));
+			grupalCoursesFound.forEach(objCourse -> objCourse.setStudentes(new ArrayList<StudentEntity>()));
 			bodyResponse.setGrupalCourses(grupalCoursesFound);
 			bodyResponseList.add(bodyResponse);
 		});
 
 		return bodyResponseList;
 	}
-	
+
 }

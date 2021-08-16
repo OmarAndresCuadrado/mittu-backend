@@ -35,6 +35,8 @@ public class Usuario implements Serializable {
 	private String name;
 
 	private String lastName;
+	
+	private String city;
 
 	@Column(unique = true)
 	private String email;
@@ -117,6 +119,18 @@ public class Usuario implements Serializable {
 	public void setMoney(Double money) {
 		this.money = money;
 	}
+	
+	
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+
 
 	/**
 	 * 
