@@ -130,6 +130,7 @@ public class StudentServiceImpl implements IStudentServiceInterface {
 
 	@Override
 	public Long moneyFromStudent(Long studentId) {
+		System.out.println("valor en la implementacion " + studentId);
 		return studentDao.moneyFromStudent(studentId);
 	}
 

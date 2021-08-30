@@ -48,8 +48,10 @@ public class StudentEntity implements Serializable {
 	private Boolean enabledPlatform;
 
 	private Double money;
-	
+
 	private String city;
+
+	private String picture;
 
 	@NotEmpty(message = "no puede estar vacio")
 	@Size(min = 2, max = 40, message = "el tamaño tiene que estar entre 2 y 40")
@@ -213,8 +215,6 @@ public class StudentEntity implements Serializable {
 	public void setMoney(Double money) {
 		this.money = money;
 	}
-	
-	
 
 	public String getCity() {
 		return city;
@@ -224,7 +224,13 @@ public class StudentEntity implements Serializable {
 		this.city = city;
 	}
 
+	public String getPicture() {
+		return picture;
+	}
 
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
 
 	/**
 	 * 

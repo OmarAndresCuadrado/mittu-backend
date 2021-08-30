@@ -37,7 +37,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.hasAnyRole("STUDENT", "ADMIN").antMatchers(HttpMethod.DELETE, "/api/student/{id}").hasRole("ADMIN")
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{idStudent}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{money}/{studentId}").hasRole("STUDENT")
-				.antMatchers(HttpMethod.GET, "/api/student/getMoney/{studentId}").hasAnyRole("ADMIN", "STUDENT","TEACHER")
+				.antMatchers(HttpMethod.GET, "/api/student/getMoney/{studentId}")
+				.hasAnyRole("ADMIN", "STUDENT", "TEACHER").antMatchers(HttpMethod.POST, "/api/student/upload/image")
+				.hasRole("STUDENT")
 
 				// Endpoints feedback
 				.antMatchers(HttpMethod.POST, "/api/feed-back").hasRole("STUDENT")
@@ -110,6 +112,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/course/upload/image/{pictureCourseName:.+}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/grupal/course/image/{pictureGrupalCourseName:.+}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/teacher/upload/image/{pictureTeacherName:.+}").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/student/upload/image/{pictureStudentName:.+}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/student/verification/{userName}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/teacher/get/information").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/retirement/excel").permitAll()

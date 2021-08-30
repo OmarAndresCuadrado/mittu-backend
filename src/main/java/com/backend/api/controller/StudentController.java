@@ -1,6 +1,12 @@
 package com.backend.api.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -15,7 +22,10 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,7 +37,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.CourseEntity;
 import com.backend.api.entity.StudentEntity;
@@ -417,7 +429,79 @@ public class StudentController {
 	
 	@GetMapping("/student/getMoney/{studentId}")
 	public Long getMoneyFromStudent(@PathVariable Long studentId) {
+		System.out.println("valorrrr " + studentId);
 		return studentService.moneyFromStudent(studentId);
+	}
+	
+	@PostMapping("/student/upload/image")
+	public ResponseEntity<?> uploadStudentImage(@RequestParam("studentImage") MultipartFile imageStudent,
+			@RequestParam("id") Long id) {
+		Map<String, Object> response = new HashMap<>();
+		StudentEntity bodyToReturn = new StudentEntity();
+
+		StudentEntity studentFound = studentService.findStudent(id);
+
+		if (!imageStudent.isEmpty()) {
+			String pictureName = UUID.randomUUID().toString() + "_"
+					+ imageStudent.getOriginalFilename().replace(" ", "");
+			Path picturePath = Paths.get("student-image").resolve(pictureName).toAbsolutePath();
+
+			try {
+				Files.copy(imageStudent.getInputStream(), picturePath);
+			} catch (IOException e) {
+				response.put("errorMsg", "Error al subir la imagen del estudiante");
+				log.info(executionTime() + "-Error al subir la imagen");
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+			String lastStudentPicture = studentFound.getPicture();
+
+			if (lastStudentPicture != null && lastStudentPicture.length() > 0) {
+
+				Path pictureLastPath = Paths.get("student-image").resolve(lastStudentPicture).toAbsolutePath();
+				File lastPicture = pictureLastPath.toFile();
+				if (lastPicture.exists() && lastPicture.canRead()) {
+					lastPicture.delete();
+				}
+			}
+
+			studentFound.setPicture(pictureName);
+			studentService.saveStudent(studentFound);
+			bodyToReturn = studentFound;
+			bodyToReturn.setPassword("");
+		}
+
+		return new ResponseEntity<StudentEntity>(bodyToReturn, HttpStatus.OK);
+	}
+
+	@GetMapping("/student/upload/image/{pictureStudentName:.+}")
+	public ResponseEntity<Resource> showPictureCourse(@PathVariable String pictureStudentName) {
+
+		System.out.println("parametro recibido de imagen de estudiante " + pictureStudentName);
+		if(pictureStudentName.isEmpty() || pictureStudentName.length() <= 0 || pictureStudentName == "" ) {
+			pictureStudentName = "default.png";
+			System.out.println("entre al default de imagen de estudiante");
+		}
+		
+		Path picturePath = Paths.get("student-image").resolve(pictureStudentName).toAbsolutePath();
+		Resource resource = null;
+
+		try {
+
+			resource = new UrlResource(picturePath.toUri());
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		if (!resource.exists() && !resource.isReadable()) {
+			throw new RuntimeException("No se pudo cargar la imagen: " + pictureStudentName);
+		}
+
+		HttpHeaders cabecera = new HttpHeaders();
+		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+
+		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
 	}
 
 }

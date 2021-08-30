@@ -280,6 +280,9 @@ public class SocketController {
 	@Transactional
 	public ResponseEntity<?> notificationChanel(@DestinationVariable Long idTeacher,
 			@DestinationVariable Long idStudent, @RequestBody TimeEntity timeObject) {
+		System.out.println("ERRORRRR DE NULL AQUI");
+		System.out.println("objetos recibidos id teacher " + idTeacher);
+		System.out.println("objetos recibidos id student" + idStudent);
 
 		System.out.println("evento recibido en timer " + timeObject.getMessage());
 
@@ -288,23 +291,26 @@ public class SocketController {
 			timeObject.setMessage("ANSWER_INITAL_TIMER_CONNECTION_STUDENT");
 			return new ResponseEntity<TimeEntity>(timeObject, HttpStatus.OK);
 		}
-		
+
 		if (timeObject.getMessage().equals("INITAL_TIMER_CONNECTION_TEACHER")) {
 			System.out.println("he entrado al evento de conexion inicial retorno un ok");
 			timeObject.setMessage("ANSWER_INITAL_TIMER_CONNECTION_TEACHER");
 			return new ResponseEntity<TimeEntity>(timeObject, HttpStatus.OK);
 		}
-		
+
 		if (timeObject.getMessage().equals("TIMER_START")) {
 			System.out.println("he entrado al evento de iniciar el cronometro");
 			timeObject.setMessage("ANSWER_TIMER_START");
 			return new ResponseEntity<TimeEntity>(timeObject, HttpStatus.OK);
 		}
-		
+
 		if (timeObject.getMessage().equals("TIMER_STOP")) {
 			System.out.println("he entrado al evento de parar el cronometro");
-			// aqui el front ejecuta los metodos de sumar y quitar minutos al profesor y al estudiante
-			// tengo que consultar a ambos estudiante y profesor para extraer el tiempo que actulamente ellos tienen para retornarlo en modal sin embargo ya la logica fue ejecutada
+			// aqui el front ejecuta los metodos de sumar y quitar minutos al profesor y al
+			// estudiante
+			// tengo que consultar a ambos estudiante y profesor para extraer el tiempo que
+			// actulamente ellos tienen para retornarlo en modal sin embargo ya la logica
+			// fue ejecutada
 			timeObject.setMessage("ANSWER_TIMER_STOP");
 			return new ResponseEntity<TimeEntity>(timeObject, HttpStatus.OK);
 		}
