@@ -82,6 +82,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/transfer/list/{idStudent}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.POST, "/api/transfer/create").hasRole("STUDENT")
 				.antMatchers(HttpMethod.GET, "/api/transfer/admin").hasRole("ADMIN")
+				.antMatchers(HttpMethod.GET, "/api/transfer/banner/upload/image").hasRole("ADMIN")
+
 
 				// Endpoints retirments
 				.antMatchers(HttpMethod.POST, "/api/retirement").hasAnyRole("TEACHER", "ADMIN")
@@ -113,6 +115,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/grupal/course/image/{pictureGrupalCourseName:.+}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/teacher/upload/image/{pictureTeacherName:.+}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/student/upload/image/{pictureStudentName:.+}").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/transfer/banner/upload/image/{pictureBannerName:.+}").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/transfer/banner/upload/image/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/transfer/banner/{id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/student/verification/{userName}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/teacher/get/information").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/retirement/excel").permitAll()

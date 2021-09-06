@@ -14,3 +14,5 @@ insert into `payments` (cost, name, fecha_de_creacion) values (100000, "10 horas
 
 insert into `usuarios` (email,enabled,last_name,money,name,password,username) values ("administradorDaniel@gmail.com", 1, "Daniel", 0, "Daiel", "$2a$10$AVuS5YB5BTMzyPDLOuSoPO.whn3qxuHxTgc2dsaw9FrVE8AFgySE6" , "administradorDaniel@gmail.com");
 insert into `usuarios_roles` values (1,3);
+
+insert into `banner` (id, color_banner, url_banner) values (1, "default_color", "default_image");
