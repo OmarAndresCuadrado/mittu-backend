@@ -37,9 +37,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.hasAnyRole("STUDENT", "ADMIN").antMatchers(HttpMethod.DELETE, "/api/student/{id}").hasRole("ADMIN")
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{idStudent}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{money}/{studentId}").hasRole("STUDENT")
-				.antMatchers(HttpMethod.GET, "/api/student/getMoney/{studentId}")
-				.hasAnyRole("ADMIN", "STUDENT", "TEACHER").antMatchers(HttpMethod.POST, "/api/student/upload/image")
-				.hasRole("STUDENT")
+				.antMatchers(HttpMethod.POST, "/api/student/upload/image").hasRole("STUDENT")
 
 				// Endpoints feedback
 				.antMatchers(HttpMethod.POST, "/api/feed-back").hasRole("STUDENT")
@@ -50,7 +48,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/teacher/enable/{idUser}").hasRole("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/teacher/upload/image").hasRole("TEACHER")
 				.antMatchers(HttpMethod.GET, "/api/teacher").hasAnyRole("TEACHER", "ADMIN", "STUDENT")
-				.antMatchers(HttpMethod.GET, "/api/teacher/{id}").hasAnyRole("TEACHER", "ADMIN", "STUDENT")
+				.antMatchers(HttpMethod.PUT, "/api/teacher/{id}").hasRole("TEACHER")
 				.antMatchers(HttpMethod.GET, "/api/teacher/get/time/{idTeacher}")
 				.hasAnyRole("STUDENT", "TEACHER", "ADMIN").antMatchers(HttpMethod.PUT, "/api/teacher/{id}")
 				.hasAnyRole("TEACHER", "ADMIN").antMatchers(HttpMethod.DELETE, "/api/teacher/{id}").hasRole("ADMIN")
@@ -121,7 +119,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/student/verification/{userName}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/teacher/get/information").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/retirement/excel").permitAll()
-
+				.antMatchers(HttpMethod.GET, "/api/student/getMoney/{studentId}").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/teacher/{id}").permitAll()
 				.antMatchers("/**").permitAll()
 
 				.anyRequest().authenticated().and().cors().configurationSource(corsConfigurationSource());

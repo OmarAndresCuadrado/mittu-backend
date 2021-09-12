@@ -228,16 +228,11 @@ public class TeacherController {
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 			}
 
-			else if (teacherEntity.getMeetUrl() == null) {
-				response.put("mensaje", "Error: no se pudo editar, el profesor con: "
-						.concat(id.toString().concat("el meet no puede ser vacio")));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-			}
-
 			teacherFound.setName(teacherEntity.getName());
 			teacherFound.setLastName(teacherEntity.getLastName());
 			teacherFound.setPhone(teacherEntity.getPhone());
-			teacherFound.setMeetUrl(teacherEntity.getMeetUrl());
+			teacherFound.setDescription(teacherEntity.getDescription());
+			teacherFound.setHourCost(teacherEntity.getHourCost());
 			teacherService.saveTeacher(teacherFound);
 
 		} catch (DataAccessException e) {

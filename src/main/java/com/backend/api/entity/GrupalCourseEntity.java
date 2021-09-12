@@ -41,6 +41,8 @@ public class GrupalCourseEntity implements Serializable {
 	private String Description;
 
 	private String urlMeet;
+	
+	private Double price;
 
 	@NotNull(message = "no puede estar vacio")
 	@Column(name = "fecha_creacion")
@@ -132,6 +134,15 @@ public class GrupalCourseEntity implements Serializable {
 	public void setUrlMeet(String urlMeet) {
 		this.urlMeet = urlMeet;
 	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
 
 	/**
 	 * 

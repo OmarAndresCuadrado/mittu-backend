@@ -77,6 +77,7 @@ public class GrupalCourseController {
 		grupalCourseFound.setDescription(grupalCourseEntityFromClient.getDescription());
 		grupalCourseFound.setClassTime(grupalCourseEntityFromClient.getClassTime());
 		grupalCourseFound.setUrlMeet(grupalCourseEntityFromClient.getUrlMeet());
+		grupalCourseFound.setPrice(grupalCourseEntityFromClient.getPrice());
 		grupalCourseUpdated = grupalCourseFound;
 
 		grupalCourseService.saveGrupalCourse(grupalCourseUpdated);

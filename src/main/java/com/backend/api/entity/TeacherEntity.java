@@ -53,8 +53,6 @@ public class TeacherEntity implements Serializable {
 	@Size(min = 2, max = 40, message = "el tamaño tiene que estar entre 6 y 40")
 	private String lastName;
 
-	@NotEmpty(message = "no puede estar vacio")
-	@Size(min = 6, max = 10, message = "el tamaño tiene que estar entre 6 y 10")
 	private String phone;
 
 	private Boolean enabledPlatform;
