@@ -38,7 +38,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{idStudent}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{money}/{studentId}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.POST, "/api/student/upload/image").hasRole("STUDENT")
-
+				.antMatchers(HttpMethod.GET, "/api/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}").hasRole("STUDENT")
+				.antMatchers(HttpMethod.GET, "/api/student/get/class-details/{studentId}").hasRole("STUDENT")
+				
+				
 				// Endpoints feedback
 				.antMatchers(HttpMethod.POST, "/api/feed-back").hasRole("STUDENT")
 				.antMatchers(HttpMethod.GET, "/api/feed-back").hasRole("ADMIN")
@@ -58,6 +61,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.hasAnyRole("TEACHER", "STUDENT")
 				.antMatchers(HttpMethod.POST, "/api/teacher/post/califaction/{idTeacher}").hasRole("TEACHER")
 				.antMatchers(HttpMethod.POST, "/api/teacher/post/profile").hasRole("ADMIN")
+				.antMatchers(HttpMethod.GET, "/api/teacher/get/class-details/{teachertId}").hasRole("TEACHER")
+				
 
 				// Endpoints subjects
 				.antMatchers(HttpMethod.POST, "/api/subject").hasRole("ADMIN")

@@ -42,11 +42,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.CourseEntity;
+import com.backend.api.entity.DetailsEntity;
 import com.backend.api.entity.StudentEntity;
 import com.backend.api.entity.TeacherEntity;
 import com.backend.api.entity.TimeEntity;
 import com.backend.api.entity.Usuario;
 import com.backend.api.serviceInterface.ICourseServiceInterface;
+import com.backend.api.serviceInterface.IDetailDaoServiceInterface;
 import com.backend.api.serviceInterface.IStudentServiceInterface;
 import com.backend.api.serviceInterface.ITeacherServiceInterface;
 import com.backend.api.serviceInterface.IUsuarioInterface;
@@ -75,6 +77,9 @@ public class StudentController {
 
 	@Autowired
 	private IUsuarioInterface userService;
+
+	@Autowired
+	private IDetailDaoServiceInterface detailService;
 
 	@GetMapping("/student")
 	public ResponseEntity<?> findAllStudents() {
@@ -188,7 +193,7 @@ public class StudentController {
 			log.info(executionTime() + "-Error no se han podido conectar con la base de datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		studentCreated = null;
 
 		return new ResponseEntity<StudentEntity>(studentCreated, HttpStatus.OK);
@@ -414,10 +419,20 @@ public class StudentController {
 		Double newMoneyForAdministrator = actualMoneyForAdministraitor + moneyForPlataform;
 		System.out.println("Dinero nuevo del administrador " + newMoneyForAdministrator);
 
+		DetailsEntity detail = new DetailsEntity();
+		detail.setIdStudent(studentId);
+		detail.setIdTeacher(teacherId);
+		detail.setStudentName(studentFound.getName().concat(studentFound.getLastName()));
+		detail.setTeacherName(teacherFound.getName().concat(teacherFound.getLastName()));
+		detail.setDuration(timeObject.getTimeOnTransaction().toString());
+		detail.setStudentPayment(operation.toString());
+		detail.setTeacherEarning(moneyForTeacher.toString());
+		detail.setPlataformEarning(moneyForPlataform.toString());
+
 		studentService.setStudentMoney(newMoneyForStudent, studentId);
 		userService.setPlataformMoney(newMoneyForAdministrator);
 		teacherService.setTeacherMoney(newMoneyForTeacher, teacherId);
-		
+		detailService.saveDetail(detail);
 
 		return null;
 	}
@@ -426,13 +441,13 @@ public class StudentController {
 	public void setMoneyStudent(@PathVariable Double money, @PathVariable Long studentId) {
 		studentService.setStudentMoney(money, studentId);
 	}
-	
+
 	@GetMapping("/student/getMoney/{studentId}")
 	public Long getMoneyFromStudent(@PathVariable Long studentId) {
 		System.out.println("valorrrr " + studentId);
 		return studentService.moneyFromStudent(studentId);
 	}
-	
+
 	@PostMapping("/student/upload/image")
 	public ResponseEntity<?> uploadStudentImage(@RequestParam("studentImage") MultipartFile imageStudent,
 			@RequestParam("id") Long id) {
@@ -478,11 +493,11 @@ public class StudentController {
 	public ResponseEntity<Resource> showPictureCourse(@PathVariable String pictureStudentName) {
 
 		System.out.println("parametro recibido de imagen de estudiante " + pictureStudentName);
-		if(pictureStudentName.isEmpty() || pictureStudentName.length() <= 0 || pictureStudentName == "" ) {
+		if (pictureStudentName.isEmpty() || pictureStudentName.length() <= 0 || pictureStudentName == "") {
 			pictureStudentName = "default.png";
 			System.out.println("entre al default de imagen de estudiante");
 		}
-		
+
 		Path picturePath = Paths.get("student-image").resolve(pictureStudentName).toAbsolutePath();
 		Resource resource = null;
 
@@ -502,6 +517,65 @@ public class StudentController {
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
 
 		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
+	}
+
+	@GetMapping("/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}")
+	public void grupalCourseTransaction(@PathVariable Double grupalCourseCost, @PathVariable Long teacherId,
+			@PathVariable Long studentId) {
+		Double grupalCourseCostDouble = grupalCourseCost;
+		Double operationValue = (double) 0;
+		System.out.println("valor del curso grupal " + grupalCourseCostDouble);
+		System.out.println("id profesor " + teacherId);
+		System.out.println("id estudiante " + studentId);
+
+		TeacherEntity teacherFound = teacherService.findTeacherById(teacherId);
+		StudentEntity studentFound = studentService.findStudent(studentId);
+		String teacherProfile = teacherFound.getProfile();
+
+		if (teacherProfile.equals("Amateur")) {
+			operationValue = (double) 30;
+		} else if (teacherProfile.equals("Junior")) {
+			operationValue = (double) 25;
+		} else if (teacherProfile.equals("Senior")) {
+			operationValue = (double) 22;
+		} else if (teacherProfile.equals("Master")) {
+			operationValue = (double) 20;
+		} else if (teacherProfile.equals("Gran Master")) {
+			operationValue = (double) 17;
+		}
+		System.out.println("valor del porcentaje para mittu " + operationValue);
+
+		Double moneyForPlataform = (grupalCourseCostDouble * operationValue) / 100;
+		System.out.println("Valor para la plataforma " + moneyForPlataform);
+		Double moneyForTeacher = (grupalCourseCostDouble - moneyForPlataform);
+		System.out.println("Valor para el profesor " + moneyForTeacher);
+		Double actualMoneyForTeacher = teacherFound.getMoney();
+		System.out.println("Dinero actual del profesor " + actualMoneyForTeacher);
+		Double actualMoneyForStudent = studentFound.getMoney();
+		System.out.println("Dinero actual del estudiante " + actualMoneyForStudent);
+		Double newMoneyForTeacher = actualMoneyForTeacher + moneyForTeacher;
+		System.out.println("Dinero nuevo del profesor " + newMoneyForTeacher);
+		Double newMoneyForStudent = actualMoneyForStudent - grupalCourseCostDouble;
+		System.out.println("Dinero nuevo del estudiante " + newMoneyForStudent);
+
+		Double actualMoneyForAdministraitor = userService.getAdministraitorMoney();
+		System.out.println("Dinero actual del administrador " + actualMoneyForAdministraitor);
+
+		Double newMoneyForAdministrator = actualMoneyForAdministraitor + moneyForPlataform;
+		System.out.println("Dinero nuevo del administrador " + newMoneyForAdministrator);
+
+		studentService.setStudentMoney(newMoneyForStudent, studentId);
+		userService.setPlataformMoney(newMoneyForAdministrator);
+		teacherService.setTeacherMoney(newMoneyForTeacher, teacherId);
+	}
+
+	@GetMapping("/student/get/class-details/{studentId}")
+	public List<DetailsEntity> getClassesDetails(@PathVariable Long studentId) {
+
+		List<DetailsEntity> listOfDetails = detailService.listOfDetailsFilterByDate("1000-01-01", "3000-01-01");
+		List<DetailsEntity> filteredList = listOfDetails.stream().filter(obj -> obj.getIdStudent() == studentId)
+				.collect(Collectors.toList());
+		return filteredList;
 	}
 
 }

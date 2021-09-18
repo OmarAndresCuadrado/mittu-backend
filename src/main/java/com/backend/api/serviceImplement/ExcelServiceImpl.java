@@ -62,27 +62,24 @@ public class ExcelServiceImpl implements IExcelInterface {
 		cellGeneralHeader.setCellValue("Identificador profesor");
 
 		cellGeneralHeader = rowGeneralHeader.createCell(2);
-		cellGeneralHeader.setCellValue("Nombre de la tutoria");
-
-		cellGeneralHeader = rowGeneralHeader.createCell(3);
 		cellGeneralHeader.setCellValue("Tiempo de la tutoria");
 
-		cellGeneralHeader = rowGeneralHeader.createCell(4);
+		cellGeneralHeader = rowGeneralHeader.createCell(3);
 		cellGeneralHeader.setCellValue("Pago realizado por el estudiante");
 
-		cellGeneralHeader = rowGeneralHeader.createCell(5);
+		cellGeneralHeader = rowGeneralHeader.createCell(4);
 		cellGeneralHeader.setCellValue("Pago realizado a la plataforma");
 
-		cellGeneralHeader = rowGeneralHeader.createCell(6);
+		cellGeneralHeader = rowGeneralHeader.createCell(5);
 		cellGeneralHeader.setCellValue("Pago realizado al docente");
 
-		cellGeneralHeader = rowGeneralHeader.createCell(7);
+		cellGeneralHeader = rowGeneralHeader.createCell(6);
 		cellGeneralHeader.setCellValue("Nombre del estudiante");
 
-		cellGeneralHeader = rowGeneralHeader.createCell(8);
+		cellGeneralHeader = rowGeneralHeader.createCell(7);
 		cellGeneralHeader.setCellValue("Nombre del profesor");
 
-		cellGeneralHeader = rowGeneralHeader.createCell(9);
+		cellGeneralHeader = rowGeneralHeader.createCell(8);
 		cellGeneralHeader.setCellValue("Fecha de creacion");
 		cellGeneralHeader.setCellStyle(cellStyle);
 
@@ -199,34 +196,30 @@ public class ExcelServiceImpl implements IExcelInterface {
 			sheetGeneral.autoSizeColumn(1);
 
 			cellGeneral = rowGeneral.createCell(2);
-			cellGeneral.setCellValue(detail.getTutoriaName());
-			sheetGeneral.autoSizeColumn(2);
-
-			cellGeneral = rowGeneral.createCell(3);
 			cellGeneral.setCellValue(detail.getDuration());
 			sheetGeneral.autoSizeColumn(3);
 
-			cellGeneral = rowGeneral.createCell(4);
+			cellGeneral = rowGeneral.createCell(3);
 			cellGeneral.setCellValue(detail.getStudentPayment());
 			sheetGeneral.autoSizeColumn(4);
 
-			cellGeneral = rowGeneral.createCell(5);
+			cellGeneral = rowGeneral.createCell(4);
 			cellGeneral.setCellValue(detail.getPlataformEarning());
 			sheetGeneral.autoSizeColumn(5);
 
-			cellGeneral = rowGeneral.createCell(6);
+			cellGeneral = rowGeneral.createCell(5);
 			cellGeneral.setCellValue(detail.getTeacherEarning());
 			sheetGeneral.autoSizeColumn(6);
 
-			cellGeneral = rowGeneral.createCell(7);
+			cellGeneral = rowGeneral.createCell(6);
 			cellGeneral.setCellValue(detail.getStudentName());
 			sheetGeneral.autoSizeColumn(7);
 
-			cellGeneral = rowGeneral.createCell(8);
+			cellGeneral = rowGeneral.createCell(7);
 			cellGeneral.setCellValue(detail.getTeacherName());
 			sheetGeneral.autoSizeColumn(8);
 
-			cellGeneral = rowGeneral.createCell(9);
+			cellGeneral = rowGeneral.createCell(8);
 			cellGeneral.setCellValue(detail.getFechaDeCreacion());
 			cellGeneral.setCellStyle(cellStyle);
 			sheetGeneral.autoSizeColumn(9);

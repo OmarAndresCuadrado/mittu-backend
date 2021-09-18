@@ -75,7 +75,7 @@ public class TeacherEntity implements Serializable {
 
 	private String education;
 
-	@Column(length = 900)
+	@Column(length = 2500)
 	private String description;
 
 	private Double calification;

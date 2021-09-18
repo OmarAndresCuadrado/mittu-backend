@@ -16,10 +16,6 @@ import javax.persistence.TemporalType;
 @Table(name = "details")
 public class DetailsEntity implements Serializable {
 
-	// idetnficador del estudiante, identificador del profesor, nombre de la tutoria
-	// , nombre del estudiante , nombre del profesor, duracion, ganacia del
-	// profesor, ganacia de la plataforma, pago realizado por el estudiante
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

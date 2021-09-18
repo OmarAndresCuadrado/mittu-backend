@@ -41,12 +41,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.CalificationClass;
+import com.backend.api.entity.DetailsEntity;
 import com.backend.api.entity.GrupalCourseEntity;
 import com.backend.api.entity.ProfileClass;
 import com.backend.api.entity.StudentEntity;
 import com.backend.api.entity.TeacherEntity;
 import com.backend.api.entity.TeacherInformationClass;
 import com.backend.api.entity.Usuario;
+import com.backend.api.serviceInterface.IDetailDaoServiceInterface;
 import com.backend.api.serviceInterface.IGrupalCourseServiceInterface;
 import com.backend.api.serviceInterface.ITeacherServiceInterface;
 import com.backend.api.serviceInterface.IUsuarioInterface;
@@ -69,6 +71,9 @@ public class TeacherController {
 
 	@Autowired
 	private IUsuarioInterface usuarioService;
+	
+	@Autowired
+	private IDetailDaoServiceInterface detailService;
 
 	@GetMapping("/teacher")
 	public ResponseEntity<?> listAllTeachers() {
@@ -432,6 +437,15 @@ public class TeacherController {
 		});
 
 		return bodyResponseList;
+	}
+	
+	@GetMapping("/teacher/get/class-details/{teachertId}")
+	public List<DetailsEntity> getClassesDetails(@PathVariable Long teachertId) {
+
+		List<DetailsEntity> listOfDetails = detailService.listOfDetailsFilterByDate("1000-01-01", "3000-01-01");
+		List<DetailsEntity> filteredList = listOfDetails.stream().filter(obj -> obj.getIdTeacher() == teachertId)
+				.collect(Collectors.toList());
+		return filteredList;
 	}
 
 }
