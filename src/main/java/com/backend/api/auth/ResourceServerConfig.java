@@ -93,6 +93,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/retirement/{id}").hasAnyRole("TEACHER", "ADMIN")
 				.antMatchers(HttpMethod.GET, "/api/retirement").hasAnyRole("TEACHER", "ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/retirement/excel").hasRole("ADMIN")
+				.antMatchers(HttpMethod.POST, "/api/retirement/update/state/{retirementId}").hasRole("ADMIN")
+				.antMatchers(HttpMethod.POST, "/api/retirement/new/send/email").hasRole("TEACHER")
+				.antMatchers(HttpMethod.POST, "/api/retirement/state/send/email").hasRole("ADMIN")
+					
 
 				// Endpoints grupalCourses
 				.antMatchers(HttpMethod.GET, "/api/grupal/course").hasAnyRole("TEACHER", "ADMIN")

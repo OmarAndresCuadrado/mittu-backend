@@ -2,6 +2,7 @@ package com.backend.api.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,16 +19,19 @@ import javax.validation.constraints.NotNull;
 @Table(name = "retirements")
 public class RetirementEntity implements Serializable {
 
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	private Long teacherIdentifier;
 
 	private String name;
 
 	private Double cost;
 
-	private Boolean state;
+	private Boolean alreadyPaid;
+
+	private String retirementId;
 
 	@NotNull(message = "no puede estar vacio")
 	@Column(name = "fecha_creacion")
@@ -38,9 +42,10 @@ public class RetirementEntity implements Serializable {
 	public void prePersist() {
 		this.fechaDeCreacion = new Date();
 	}
-	
+
 	public RetirementEntity() {
 		this.prePersist();
+		this.retirementId = this.randomIdGeneration();
 	}
 
 	public Long getId() {
@@ -67,12 +72,12 @@ public class RetirementEntity implements Serializable {
 		this.cost = cost;
 	}
 
-	public Boolean getState() {
-		return state;
+	public Boolean getAlreadyPaid() {
+		return alreadyPaid;
 	}
 
-	public void setState(Boolean state) {
-		this.state = state;
+	public void setAlreadyPaid(Boolean alreadyPaid) {
+		this.alreadyPaid = alreadyPaid;
 	}
 
 	public Date getFechaDeCreacion() {
@@ -82,13 +87,38 @@ public class RetirementEntity implements Serializable {
 	public void setFechaDeCreacion(Date fechaDeCreacion) {
 		this.fechaDeCreacion = fechaDeCreacion;
 	}
-	
-	
+
+	public String getRetirementId() {
+		return retirementId;
+	}
+
+	public void setRetirementId(String retirementId) {
+		this.retirementId = retirementId;
+	}
+
+	public Long getTeacherIdentifier() {
+		return teacherIdentifier;
+	}
+
+	public void setTeacherIdentifier(Long teacherIdentifier) {
+		this.teacherIdentifier = teacherIdentifier;
+	}
+
+	private String randomIdGeneration() {
+		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		StringBuilder salt = new StringBuilder();
+		Random rnd = new Random();
+		while (salt.length() < 18) {
+			int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+			salt.append(SALTCHARS.charAt(index));
+		}
+		String saltStr = salt.toString();
+		return saltStr;
+	}
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
 }

@@ -245,7 +245,7 @@ public class ExcelServiceImpl implements IExcelInterface {
 			sheetRetiros.autoSizeColumn(2);
 
 			cellRetiros = rowRetiros.createCell(3);
-			cellRetiros.setCellValue(retirementEntity.getState() == false ? "Pendiente" : "Pagado");
+			cellRetiros.setCellValue(retirementEntity.getAlreadyPaid() == false ? "Pendiente" : "Depositado");
 			sheetRetiros.autoSizeColumn(3);
 
 			cellRetiros = rowRetiros.createCell(4);

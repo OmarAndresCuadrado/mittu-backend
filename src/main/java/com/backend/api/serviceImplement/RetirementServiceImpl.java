@@ -1,20 +1,31 @@
 package com.backend.api.serviceImplement;
 
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.api.dao.IRetirementDao;
 import com.backend.api.entity.RetirementEntity;
+import com.backend.api.entity.TeacherEntity;
 import com.backend.api.serviceInterface.IRetirementServiceInterface;
+import com.backend.api.serviceInterface.ITeacherServiceInterface;
 
 @Service
 public class RetirementServiceImpl implements IRetirementServiceInterface {
 
 	@Autowired
 	private IRetirementDao retirementDao;
+
+	@Autowired
+	private ITeacherServiceInterface teacherService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -37,6 +48,88 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 	@Override
 	public List<RetirementEntity> listOfRetirementsFilterByDate(String initialDate, String finalDate) {
 		return retirementDao.listOfRetirementsFilterByDate(initialDate, finalDate);
+	}
+
+	@Override
+	@Transactional
+	public void updateRetirementOwner(String teacher_identifier) {
+		retirementDao.updateRetirementOwner(teacher_identifier);
+	}
+
+	@Override
+	@Transactional
+	public void updateRetirementState(String retirementId) {
+		retirementDao.updateRetirementState(retirementId);
+	}
+
+	@Override
+	@Transactional
+	public void sentEmailRetirement(String idReference, Long idTeacher, String accountDetails) {
+		TeacherEntity teacherFound = teacherService.findTeacherById(idTeacher);
+		String to = "mittuoficial@gmail.com";
+		String subject = "Solicitud de retiro de fondos del docente " +  teacherFound.getName().concat(" " + teacherFound.getLastName()) + ", Id de referencia: " + idReference ;
+		String emailBody = "Detalles para realizar la transferencia: \n AQUI SE PONDRA LA INFORMACION";
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+
+		mailSender.setUsername("mittuoficial@gmail.com");
+		mailSender.setPassword("zatjbjbavvsejthj");
+
+		Properties props = mailSender.getJavaMailProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.debug", "true");
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper;
+		
+		try {
+			helper = new MimeMessageHelper(message, true);
+			helper.setTo(to);
+			helper.setSubject(subject);
+			helper.setText(emailBody);
+			mailSender.send(message);
+			
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	@Transactional
+	public void sentEmailForChangeStateRetirement(String idReference, Long idTeacher) {
+		TeacherEntity teacherFound = teacherService.findTeacherById(idTeacher);
+		String to = teacherFound.getEmail();
+		String subject = "Se ha realizado con exito el pago de la transacción " +  idReference;
+		String emailBody = "Se ha realizado exitosamente la transferencia de fondos a tu cuenta bancaria.";
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+
+		mailSender.setUsername("mittuoficial@gmail.com");
+		mailSender.setPassword("zatjbjbavvsejthj");
+
+		Properties props = mailSender.getJavaMailProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.debug", "true");
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper;
+		
+		try {
+			helper = new MimeMessageHelper(message, true);
+			helper.setTo(to);
+			helper.setSubject(subject);
+			helper.setText(emailBody);
+			mailSender.send(message);
+			
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

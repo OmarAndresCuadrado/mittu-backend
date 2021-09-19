@@ -13,5 +13,13 @@ public interface IRetirementServiceInterface {
 	public RetirementEntity saveRetirement(RetirementEntity retirement);
 	
 	public List<RetirementEntity> listOfRetirementsFilterByDate(String initialDate, String finalDate);
+	
+	public void updateRetirementOwner(String teacher_identifier);
+	
+	public void updateRetirementState(String retirementId);
+	
+	public void sentEmailRetirement(String idReference, Long idTeacher, String accountDetails);
+	
+	public void sentEmailForChangeStateRetirement(String idReference, Long idTeacher);
 		
 }

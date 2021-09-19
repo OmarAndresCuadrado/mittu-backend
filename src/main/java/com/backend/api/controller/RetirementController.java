@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.api.entity.DetailsEntity;
+import com.backend.api.entity.EmailRetirementToSentDto;
 import com.backend.api.entity.ExcelClass;
 import com.backend.api.entity.RetirementEntity;
 import com.backend.api.entity.StudentEntity;
@@ -71,10 +72,19 @@ public class RetirementController {
 		return retirementService.findRetirementById(id);
 	}
 
+	@GetMapping("/retirement/update/state/{retirementId}")
+	public void updateRetirementState(@PathVariable String retirementId) {
+		retirementService.updateRetirementState(retirementId);
+	}
+
 	@PostMapping("/retirement")
 	public RetirementEntity createRetirement(@RequestBody RetirementEntity retirement) {
 		log.info("Retiro solicitado a las horas: " + executionTime());
-		return retirementService.saveRetirement(retirement);
+		RetirementEntity newRetirement = new RetirementEntity();
+		newRetirement = retirementService.saveRetirement(retirement);
+		retirementService.updateRetirementOwner(retirement.getTeacherIdentifier().toString());
+		teacherService.setTeacherMoney(Double.valueOf(0), retirement.getTeacherIdentifier());
+		return newRetirement;
 	}
 
 	@PostMapping("/retirement/excel")
@@ -124,6 +134,18 @@ public class RetirementController {
 		headers.add(content, documentName);
 		return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bais));
 
+	}
+
+	@PostMapping("/retirement/new/send/email")
+	public void sentEmailForNewRetirement(@RequestBody EmailRetirementToSentDto emailRetirementToSentDto) {
+		retirementService.sentEmailRetirement(emailRetirementToSentDto.getIdReference(),
+				emailRetirementToSentDto.getIdTeacher(), emailRetirementToSentDto.getAccountDetails());
+	}
+	
+	@PostMapping("/retirement/state/send/email")
+	public void sentEmailForChangeStateRetirement(@RequestBody EmailRetirementToSentDto emailRetirementToSentDto) {
+		retirementService.sentEmailForChangeStateRetirement(emailRetirementToSentDto.getIdReference(),
+				emailRetirementToSentDto.getIdTeacher());
 	}
 
 	public String executionTime() {
