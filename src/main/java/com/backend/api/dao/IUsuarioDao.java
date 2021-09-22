@@ -46,14 +46,14 @@ public interface IUsuarioDao extends CrudRepository<Usuario, Long> {
 	@Query(value = "select subject_entity_id from `subjects_students` where student_entity_id = ?1", nativeQuery = true)
 	public List<BigInteger> findSubjectsFromStudent(Long userId);
 
-	@Query(value = "select id from teacherhouse.usuarios where email = 'administradorDaniel@gmail.com'", nativeQuery = true)
+	@Query(value = "select id from teacherhouse.usuarios where email = 'mittuoficial@gmail.com'", nativeQuery = true)
 	public Long findAdminId();
 
 	@Modifying(clearAutomatically = true)
-	@Query(value = "update teacherhouse.usuarios SET money = ?1 where teacherhouse.usuarios.username = 'administradorDaniel@gmail.com'", nativeQuery = true)
+	@Query(value = "update teacherhouse.usuarios SET money = ?1 where teacherhouse.usuarios.username = 'mittuoficial@gmail.com'", nativeQuery = true)
 	public void setPlataformMoney(Double money);
 
 
-	@Query(value = "select money from teacherhouse.usuarios where teacherhouse.usuarios.username = 'administradorDaniel@gmail.com'", nativeQuery = true)
+	@Query(value = "select money from teacherhouse.usuarios where teacherhouse.usuarios.username = 'mittuoficial@gmail.com'", nativeQuery = true)
 	public Double getAdministraitorMoney();
 }

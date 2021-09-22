@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.CourseEntity;
 import com.backend.api.entity.DetailsEntity;
+import com.backend.api.entity.GrupalCoursePurchaseOperationResult;
 import com.backend.api.entity.StudentEntity;
 import com.backend.api.entity.TeacherEntity;
 import com.backend.api.entity.TimeEntity;
@@ -520,8 +521,9 @@ public class StudentController {
 	}
 
 	@GetMapping("/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}")
-	public void grupalCourseTransaction(@PathVariable Double grupalCourseCost, @PathVariable Long teacherId,
-			@PathVariable Long studentId) {
+	public GrupalCoursePurchaseOperationResult grupalCourseTransaction(@PathVariable Double grupalCourseCost,
+			@PathVariable Long teacherId, @PathVariable Long studentId) {
+		GrupalCoursePurchaseOperationResult grupalCoursePurchaseOperationResult = new GrupalCoursePurchaseOperationResult();
 		Double grupalCourseCostDouble = grupalCourseCost;
 		Double operationValue = (double) 0;
 		System.out.println("valor del curso grupal " + grupalCourseCostDouble);
@@ -567,6 +569,10 @@ public class StudentController {
 		studentService.setStudentMoney(newMoneyForStudent, studentId);
 		userService.setPlataformMoney(newMoneyForAdministrator);
 		teacherService.setTeacherMoney(newMoneyForTeacher, teacherId);
+		grupalCoursePurchaseOperationResult.setMoneyForTeacher(moneyForTeacher.toString());
+		grupalCoursePurchaseOperationResult.setMoneyForPlataform(moneyForPlataform.toString());
+
+		return grupalCoursePurchaseOperationResult;
 	}
 
 	@GetMapping("/student/get/class-details/{studentId}")

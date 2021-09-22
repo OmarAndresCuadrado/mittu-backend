@@ -68,7 +68,7 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 		TeacherEntity teacherFound = teacherService.findTeacherById(idTeacher);
 		String to = "mittuoficial@gmail.com";
 		String subject = "Solicitud de retiro de fondos del docente " +  teacherFound.getName().concat(" " + teacherFound.getLastName()) + ", Id de referencia: " + idReference ;
-		String emailBody = "Detalles para realizar la transferencia: \n AQUI SE PONDRA LA INFORMACION";
+		String emailBody = "Detalles para realizar la transferencia: \n" + "\n" + "\n" + accountDetails;
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
@@ -88,7 +88,7 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 		try {
 			helper = new MimeMessageHelper(message, true);
 			helper.setTo(to);
-			helper.setSubject(subject);
+			helper.setSubject(subject); 
 			helper.setText(emailBody);
 			mailSender.send(message);
 			

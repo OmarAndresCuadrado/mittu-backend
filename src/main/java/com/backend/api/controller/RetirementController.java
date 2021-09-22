@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.api.entity.DetailsEntity;
 import com.backend.api.entity.EmailRetirementToSentDto;
 import com.backend.api.entity.ExcelClass;
+import com.backend.api.entity.GrupalCoursePurchaseEntity;
 import com.backend.api.entity.RetirementEntity;
 import com.backend.api.entity.StudentEntity;
 import com.backend.api.entity.TeacherEntity;
@@ -36,6 +37,7 @@ import com.backend.api.serviceImplement.RetirementServiceImpl;
 import com.backend.api.serviceImplement.StudentServiceImpl;
 import com.backend.api.serviceImplement.TeacherServiceImpl;
 import com.backend.api.serviceImplement.TransferServiceImpl;
+import com.backend.api.serviceInterface.IGrupalCoursePurchaseInterface;
 
 @CrossOrigin(origins = { "*" })
 @RestController
@@ -59,6 +61,9 @@ public class RetirementController {
 
 	@Autowired
 	private ExcelServiceImpl excelService;
+
+	@Autowired
+	private IGrupalCoursePurchaseInterface grupalCoursePurchaseService;
 
 	private final Logger log = LoggerFactory.getLogger(StudentController.class);
 
@@ -126,9 +131,12 @@ public class RetirementController {
 		List<DetailsEntity> detailsList = detailsService.listOfDetailsFilterByDate(excelClass.getInitialDate(),
 				excelClass.getFinalDate());
 
+		List<GrupalCoursePurchaseEntity> grupalCoursePurchaseList = grupalCoursePurchaseService
+				.getListOfGrupalCoursesPurchasesFilterByDate(excelClass.getInitialDate(), excelClass.getFinalDate());
+
 		response.setHeader(headerKey, headerValue);
 		ByteArrayInputStream bais = excelService.exportExcel(retirementList, transferList, studentList, teacherList,
-				detailsList);
+				detailsList, grupalCoursePurchaseList);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(content, documentName);
@@ -141,7 +149,7 @@ public class RetirementController {
 		retirementService.sentEmailRetirement(emailRetirementToSentDto.getIdReference(),
 				emailRetirementToSentDto.getIdTeacher(), emailRetirementToSentDto.getAccountDetails());
 	}
-	
+
 	@PostMapping("/retirement/state/send/email")
 	public void sentEmailForChangeStateRetirement(@RequestBody EmailRetirementToSentDto emailRetirementToSentDto) {
 		retirementService.sentEmailForChangeStateRetirement(emailRetirementToSentDto.getIdReference(),

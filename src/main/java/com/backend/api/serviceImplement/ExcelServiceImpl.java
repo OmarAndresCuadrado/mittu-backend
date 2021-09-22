@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import com.backend.api.entity.DetailsEntity;
+import com.backend.api.entity.GrupalCoursePurchaseEntity;
 import com.backend.api.entity.RetirementEntity;
 import com.backend.api.entity.StudentEntity;
 import com.backend.api.entity.TeacherEntity;
@@ -31,20 +32,22 @@ public class ExcelServiceImpl implements IExcelInterface {
 	private XSSFSheet sheetTransferencias;
 	private XSSFSheet sheetAlumnos;
 	private XSSFSheet sheetProfesores;
+	private XSSFSheet sheetGrupalCoursePurchases; 
 	private ByteArrayOutputStream outPutStream;
 
 	@Override
 	public ByteArrayInputStream exportExcel(List<RetirementEntity> retirementList, List<TransferEntity> transferList,
-			List<StudentEntity> studentList, List<TeacherEntity> teacherList, List<DetailsEntity> detailsList)
+			List<StudentEntity> studentList, List<TeacherEntity> teacherList, List<DetailsEntity> detailsList, List<GrupalCoursePurchaseEntity> grupalCoursePurchaseList)
 			throws IOException {
 
 		workbook = new XSSFWorkbook();
 		outPutStream = new ByteArrayOutputStream();
-		sheetGeneral = workbook.createSheet("General");
-		sheetRetiros = workbook.createSheet("Retiros");
-		sheetTransferencias = workbook.createSheet("Recargas");
-		sheetAlumnos = workbook.createSheet("Alumnos");
-		sheetProfesores = workbook.createSheet("Profesores");
+		sheetGeneral = workbook.createSheet("Registro de tutorias");
+		sheetGrupalCoursePurchases = workbook.createSheet("Registro de cursos grupales");
+		sheetRetiros = workbook.createSheet("Registro de Retiros");
+		sheetTransferencias = workbook.createSheet("Registro de Recargas");
+		sheetAlumnos = workbook.createSheet("Regristro de Alumnos");
+		sheetProfesores = workbook.createSheet("Registro de Profesores");
 		cellStyle = workbook.createCellStyle();
 		createHelper = workbook.getCreationHelper();
 		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy/mm/dd"));
@@ -82,6 +85,32 @@ public class ExcelServiceImpl implements IExcelInterface {
 		cellGeneralHeader = rowGeneralHeader.createCell(8);
 		cellGeneralHeader.setCellValue("Fecha de creacion");
 		cellGeneralHeader.setCellStyle(cellStyle);
+		
+		// Grupal Courses purchases
+		
+		Row rowGrupalCoursePurchaseHeader = sheetGrupalCoursePurchases.createRow(0);
+
+		Cell cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(0);
+		cellGrupalCoursePurchasHeader.setCellValue("Identificador del estudiante");
+
+		cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(1);
+		cellGrupalCoursePurchasHeader.setCellValue("Identificador del profesor");
+
+		cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(2);
+		cellGrupalCoursePurchasHeader.setCellValue("Nombre del curso grupal");
+
+		cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(3);
+		cellGrupalCoursePurchasHeader.setCellValue("Costro del curso grupal");
+		
+		cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(4);
+		cellGrupalCoursePurchasHeader.setCellValue("Dinero para el docente");
+		
+		cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(5);
+		cellGrupalCoursePurchasHeader.setCellValue("Dinero para la plataforma");
+
+		cellGrupalCoursePurchasHeader = rowGrupalCoursePurchaseHeader.createCell(6);
+		cellGrupalCoursePurchasHeader.setCellValue("Fecha de creacion");
+		cellGrupalCoursePurchasHeader.setCellStyle(cellStyle);
 
 		// Retiros page
 
@@ -179,6 +208,7 @@ public class ExcelServiceImpl implements IExcelInterface {
 		int rowTransferenciasCount = 1;
 		int rowAlumnosCount = 1;
 		int rowProfesoresCount = 1;
+		int rowGrupalCoursesPurchaseCount = 1;
 
 		// General page
 
@@ -225,6 +255,44 @@ public class ExcelServiceImpl implements IExcelInterface {
 			sheetGeneral.autoSizeColumn(9);
 
 		}
+		
+		for (GrupalCoursePurchaseEntity grupalCoursePurchase : grupalCoursePurchaseList) {
+			
+			Row rowGrupalCoursePurchase = sheetGrupalCoursePurchases.createRow(rowGrupalCoursesPurchaseCount++);
+
+			// Grupal Course Purchase
+			Cell cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(0);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getIdStudent());
+			sheetGrupalCoursePurchases.autoSizeColumn(0);
+
+			cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(1);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getIdTeacher());
+			sheetGrupalCoursePurchases.autoSizeColumn(1);
+
+			cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(2);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getGrupalCourseName());
+			sheetGrupalCoursePurchases.autoSizeColumn(2);
+
+			cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(3);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getGruaplCourseCost());
+			sheetGrupalCoursePurchases.autoSizeColumn(3);
+
+			cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(4);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getMoneyForTeacher());
+			sheetGrupalCoursePurchases.autoSizeColumn(4);
+
+			cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(5);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getMoneyForPlataform());
+			sheetGrupalCoursePurchases.autoSizeColumn(5);
+
+
+			cellGrupalCoursePurchase = rowGrupalCoursePurchase.createCell(6);
+			cellGrupalCoursePurchase.setCellValue(grupalCoursePurchase.getFechaDeCreacion());
+			cellGrupalCoursePurchase.setCellStyle(cellStyle);
+			sheetGrupalCoursePurchases.autoSizeColumn(6);
+
+		}
+		
 
 		// Retiros page
 
@@ -233,7 +301,7 @@ public class ExcelServiceImpl implements IExcelInterface {
 			Row rowRetiros = sheetRetiros.createRow(rowRetirosCount++);
 
 			Cell cellRetiros = rowRetiros.createCell(0);
-			cellRetiros.setCellValue(retirementEntity.getId());
+			cellRetiros.setCellValue(retirementEntity.getRetirementId());
 			sheetRetiros.autoSizeColumn(0);
 
 			cellRetiros = rowRetiros.createCell(1);
@@ -262,7 +330,7 @@ public class ExcelServiceImpl implements IExcelInterface {
 			Row rowTransferencias = sheetTransferencias.createRow(rowTransferenciasCount++);
 
 			Cell cellTransferencias = rowTransferencias.createCell(0);
-			cellTransferencias.setCellValue(transfer.getId());
+			cellTransferencias.setCellValue(transfer.getTransferCode());
 			sheetTransferencias.autoSizeColumn(0);
 
 			cellTransferencias = rowTransferencias.createCell(1);
