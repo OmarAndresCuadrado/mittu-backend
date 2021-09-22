@@ -136,7 +136,6 @@ public class TeacherServiceImpl implements ITeacherServiceInterface {
 	@Override
 	public Integer getTeacherTime(Long idTeacher) {
 		Integer teacherTime = teacherDao.getTeacherTime(idTeacher);
-		System.out.println("valor retornado en el tiempo profesor " + teacherTime);
 		return teacherTime;
 	}
 

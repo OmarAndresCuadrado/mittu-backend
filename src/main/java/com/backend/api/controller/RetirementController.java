@@ -111,7 +111,6 @@ public class RetirementController {
 			excelClass.setFinalDate("3000-01-01");
 		}
 
-		System.out.println("nombre del documento " + documentName);
 		response.setContentType("application/octet-stream");
 		String headerKey = "Content-Disposition";
 		String headerValue = documentName;

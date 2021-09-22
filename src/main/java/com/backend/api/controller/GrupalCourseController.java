@@ -70,8 +70,6 @@ public class GrupalCourseController {
 		GrupalCourseEntity grupalCourseFound = new GrupalCourseEntity();
 		GrupalCourseEntity grupalCourseUpdated = new GrupalCourseEntity();
 
-		System.out.println(grupalCourseEntityFromClient.getName());
-
 		grupalCourseFound = grupalCourseService.findGrupalCourseById(id);
 		grupalCourseFound.setName(grupalCourseEntityFromClient.getName());
 		grupalCourseFound.setDescription(grupalCourseEntityFromClient.getDescription());
@@ -81,10 +79,6 @@ public class GrupalCourseController {
 		grupalCourseUpdated = grupalCourseFound;
 
 		grupalCourseService.saveGrupalCourse(grupalCourseUpdated);
-
-		// Implementar la actualizacion de la imagen
-
-		System.out.println("He llegado a actualizar el curso grupal");
 		return grupalCourseUpdated;
 	}
 
@@ -95,18 +89,13 @@ public class GrupalCourseController {
 
 	@GetMapping("/grupal/course/search/{grupalCourseName}")
 	public List<GrupalCourseEntity> searchByCourseName(@PathVariable String grupalCourseName) {
-		System.out.println(grupalCourseName);
 		List<GrupalCourseEntity> listOfGrupalCoursesFoundByName = new ArrayList<>();
 		listOfGrupalCoursesFoundByName = this.grupalCourseService.searchByGrupalCourseName(grupalCourseName);
-		System.out.println("lista de cursos grupales, " + listOfGrupalCoursesFoundByName);
 		return listOfGrupalCoursesFoundByName;
 	}
 
 	@PostMapping("/grupal/course/create/inscription")
 	public void createInscriptionToGrupalCourse(@RequestBody GrupalCourseInscriptionEntity params) {
-		System.out.println("objeto recibido " + params);
-		System.out.println("objeto recibido id curso " + params.getCourseId());
-		System.out.println("objeto recibido id estudiante" + params.getStudentId());
 
 		try {
 			this.grupalCourseService.createInscriptionToGrupalCourse(params.getCourseId(), params.getStudentId());
@@ -129,7 +118,6 @@ public class GrupalCourseController {
 		for (BigInteger bigInteger : listOfGrupalCoursesFoundByStudentId) {
 			GrupalCoursesFound = grupalCourseService.findGrupalCourseById(bigInteger.longValue());
 			GrupalCoursesFound.setStudentes(new ArrayList<>());
-			System.out.println("id que se esta buscando el curso grupal " + bigInteger.longValue());
 			listOfGrupalCoursesFoundAll.add(GrupalCoursesFound);
 		}
 

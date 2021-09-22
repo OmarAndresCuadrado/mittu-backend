@@ -73,11 +73,6 @@ public class TransferController {
 	@PostMapping("/transfer/create")
 	public void createTrasnferToStudent(@RequestBody TransferEntity transfer) {
 		log.info("Transaccion realizada a las horas: " + executionTime());
-		System.out.println(transfer.getCost());
-		System.out.println(transfer.getFechaDeCreacion());
-		System.out.println(transfer.getName());
-		System.out.println(transfer.getIdStudent());
-		System.out.println(transfer.getTransferCode());
 		transferService.createTransfer(transfer.getCost(), transfer.getFechaDeCreacion(), transfer.getName(),
 				transfer.getIdStudent(), transfer.getTransferCode());
 	}

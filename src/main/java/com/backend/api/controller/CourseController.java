@@ -107,8 +107,6 @@ public class CourseController {
 		}
 
 		try {
-			System.out.println("ID RECIBIDO DEL FRONT " + courseEntity.getIdTeacher());
-			System.out.println("Nombre del profesor" + courseEntity.getTeacherName());
 			course = this.courseService.saveCourse(courseEntity);
 		} catch (DataAccessException e) {
 			response.put("errorMsg", "Error al realizar la conexion con la base de datos");
@@ -121,7 +119,6 @@ public class CourseController {
 
 	@PostMapping("/course/creation")
 	public void createCourseInsertion(@RequestBody CourseEntity courseEntity) {
-		System.out.println("id del teacher " + courseEntity.getIdTeacher());
 		 this.courseService.insertNewCourse(courseEntity.getName(), courseEntity.getFechaDeCreacion(), null,
 				courseEntity.getIdTeacher(), courseEntity.getBusy(), courseEntity.getDescription(),
 				courseEntity.getMeetUrlCourse(),courseEntity.getIdTeacher());
@@ -186,10 +183,8 @@ public class CourseController {
 
 	@GetMapping("/course/find/course/name/{courseName}")
 	public List<CourseEntity> searchByCourseName(@PathVariable String courseName) {
-		System.out.println(courseName);
 		List<CourseEntity> listOfCoursesFoundByName = new ArrayList<>();
 		listOfCoursesFoundByName = this.courseService.searchByCourseName(courseName);
-		System.out.println("lista de cursos, " + listOfCoursesFoundByName);
 		return listOfCoursesFoundByName;
 	}
 

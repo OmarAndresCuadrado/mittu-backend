@@ -170,7 +170,6 @@ public class TeacherController {
 				log.info(executionTime() + "-Error no se han podido conectar con la base de datos");
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			System.out.println("id del usuario creado para el profesor" + finalUsuario.getId());
 			Long teacherId = finalUsuario.getId();
 			teacherEntity.setIdUser(teacherId);
 			teacherEntity.setEnabled(false);
@@ -189,7 +188,6 @@ public class TeacherController {
 			teacherEntity.setPicture("");
 			teacherCreated = teacherService.saveTeacher(teacherEntity);
 			usuarioService.findTeacherCreatedAndSetRole(teacherId);
-			System.out.println("id del profesor al que le envio la actualizacion de tiempo " + teacherCreated.getId());
 			teacherService.setTeacherTime(0, teacherCreated.getId());
 
 		} catch (DataAccessException e) {
@@ -385,7 +383,6 @@ public class TeacherController {
 	public Integer getTimeFromStudent(@PathVariable Long idTeacher) {
 
 		Integer teacherTime = teacherService.getTeacherTime(idTeacher);
-		System.out.println("tiempo recuperado " + teacherTime);
 		return teacherTime;
 	}
 

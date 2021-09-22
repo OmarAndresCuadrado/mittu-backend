@@ -79,7 +79,6 @@ public class CourseServiceImpl implements ICourseServiceInterface {
 	@Transactional
 	public void insertNewCourse(String name, Date fechaDeCreacion, Long subjectId, Long idTeacher,
 			Boolean busy, String description, String meetUrlCourse, Long teacherId) {
-		System.out.println("id del profesor al crear el curso " + idTeacher);
 		courseDao.createInscriptionToTutoria(name, fechaDeCreacion, subjectId, idTeacher, busy, description, meetUrlCourse, teacherId);
 	}
 	

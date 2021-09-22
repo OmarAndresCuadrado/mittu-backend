@@ -185,8 +185,6 @@ public class StudentController {
 			studentCreated = studentService.saveStudent(studentEntity);
 			usuarioService.findStudentCreatedAndSetRole(stuendtId);
 			studentService.sentEmailToStudent(studentEntity, cleanPassword);
-			System.out
-					.println("id del estudiante al que le envio la actualizacion de tiempo " + studentCreated.getId());
 			studentService.setStudentTime(0, studentCreated.getId());
 
 		} catch (DataAccessException e) {
@@ -318,16 +316,13 @@ public class StudentController {
 		List<CourseEntity> coursesFound = new ArrayList<CourseEntity>();
 		List<CourseEntity> listOfCoursesAll = new ArrayList<CourseEntity>();
 		Long idStudentFound = usuarioService.findStudentByUserId(idStudent);
-		System.out.println("id econtrado " + idStudentFound);
 		List<BigInteger> idsOfSubjects = usuarioService.findSubjectsFromStudent(idStudentFound);
 
 		for (BigInteger bigInteger : idsOfSubjects) {
 			coursesFound = courseService.findCoursesFromSubject(bigInteger.longValue());
-			System.out.println("id que se esta buscando el curso " + bigInteger.longValue());
 			coursesFound.forEach(courseFoundObject -> {
 				listOfCoursesAll.add(courseFoundObject);
 			});
-			System.out.println("Objetos en la lista actual" + listOfCoursesAll);
 		}
 
 		return new ResponseEntity<List<CourseEntity>>(listOfCoursesAll, HttpStatus.OK);
@@ -336,21 +331,16 @@ public class StudentController {
 	@PutMapping("/student/set/time/{idStudent}")
 	public Integer getTimeFromStudent(@PathVariable Long idStudent, @RequestBody TimeEntity timeObject) {
 		Integer studentTime = studentService.getStudentTime(idStudent);
-		System.out.println("valor recuperado " + studentTime);
 		Integer newStudentTime = 0;
 		newStudentTime = timeObject.getTimeOnTransaction();
 
 		if (studentTime <= 0) {
-			System.out.println("condicional 1");
-			System.out.println("el valor es 0 se pone el valor que viene " + timeObject.getTimeOnTransaction());
 			studentService.setStudentTime(timeObject.getTimeOnTransaction(), idStudent);
 			studentTime = timeObject.getTimeOnTransaction();
 			return studentTime;
 
 		} else {
-			System.out.println("condicional 2");
 			newStudentTime = (timeObject.getTimeOnTransaction() + studentTime);
-			System.out.println("el valor no es 0 se hace sumatoria con el valor que viene " + newStudentTime);
 			studentService.setStudentTime(newStudentTime, idStudent);
 			return newStudentTime;
 		}
@@ -360,19 +350,12 @@ public class StudentController {
 	public Integer getTimeFromStudent(@PathVariable Long idStudent) {
 
 		Integer studentTime = studentService.getStudentTime(idStudent);
-		System.out.println("tiempo recuperado " + studentTime);
 		return studentTime;
 	}
 
 	@PostMapping("/student/teacher/get/time")
 	public ResponseEntity<?> getTimeFromStudentAndTeacher(@RequestBody TimeEntity timeObject) {
 		Double operationValue = (double) 0;
-		System.out.println("valor id student " + timeObject.getStudentId());
-		System.out.println("valor id teacher " + timeObject.getTeacherId());
-		System.out.println("valor time para opera " + timeObject.getTimeOnTransaction());
-		System.out.println("valor del costo por hora del profesor "
-				+ teacherService.findTeacherById(timeObject.getTeacherId()).getHourCost());
-
 		TeacherEntity teacherFound = teacherService.findTeacherById(timeObject.getTeacherId());
 		StudentEntity studentFound = studentService.findStudent(timeObject.getStudentId());
 		String teacherProfile = teacherFound.getProfile();
@@ -388,38 +371,20 @@ public class StudentController {
 		} else if (teacherProfile.equals("Gran Master")) {
 			operationValue = (double) 17;
 		}
-		System.out.println("valor del porcentaje para mittu " + operationValue);
 
-		System.out.println("Perfil del profesor " + teacherProfile);
 		Long teacherId = timeObject.getTeacherId();
-		System.out.println("id del profesor " + teacherId);
 		Long studentId = timeObject.getStudentId();
-		System.out.println("id del estudiante " + studentId);
 		Double costPerHour = teacherFound.getHourCost();
-		System.out.println("costo por hora " + costPerHour);
 		Double costPerMinute = (costPerHour / 60);
-		System.out.println("costo por minuto " + costPerMinute);
 		Double operation = (costPerMinute * timeObject.getTimeOnTransaction());
-		System.out.println("Resultado de la operacion " + operation);
 		Double moneyForPlataform = ((operation * operationValue) / 100);
-		System.out.println("Valor para la plataforma " + moneyForPlataform);
 		Double moneyForTeacher = (operation - moneyForPlataform);
-		System.out.println("Valor para el profesor " + moneyForTeacher);
 		Double actualMoneyForTeacher = teacherFound.getMoney();
-		System.out.println("Dinero actual del profesor " + actualMoneyForTeacher);
 		Double actualMoneyForStudent = studentFound.getMoney();
-		System.out.println("Dinero actual del estudiante " + actualMoneyForStudent);
 		Double newMoneyForTeacher = actualMoneyForTeacher + moneyForTeacher;
-		System.out.println("Dinero nuevo del profesor " + newMoneyForTeacher);
 		Double newMoneyForStudent = actualMoneyForStudent - operation;
-		System.out.println("Dinero nuevo del estudiante " + newMoneyForStudent);
-
 		Double actualMoneyForAdministraitor = userService.getAdministraitorMoney();
-		System.out.println("Dinero actual del administrador " + actualMoneyForAdministraitor);
-
 		Double newMoneyForAdministrator = actualMoneyForAdministraitor + moneyForPlataform;
-		System.out.println("Dinero nuevo del administrador " + newMoneyForAdministrator);
-
 		DetailsEntity detail = new DetailsEntity();
 		detail.setIdStudent(studentId);
 		detail.setIdTeacher(teacherId);
@@ -445,7 +410,6 @@ public class StudentController {
 
 	@GetMapping("/student/getMoney/{studentId}")
 	public Long getMoneyFromStudent(@PathVariable Long studentId) {
-		System.out.println("valorrrr " + studentId);
 		return studentService.moneyFromStudent(studentId);
 	}
 
@@ -493,10 +457,8 @@ public class StudentController {
 	@GetMapping("/student/upload/image/{pictureStudentName:.+}")
 	public ResponseEntity<Resource> showPictureCourse(@PathVariable String pictureStudentName) {
 
-		System.out.println("parametro recibido de imagen de estudiante " + pictureStudentName);
 		if (pictureStudentName.isEmpty() || pictureStudentName.length() <= 0 || pictureStudentName == "") {
 			pictureStudentName = "default.png";
-			System.out.println("entre al default de imagen de estudiante");
 		}
 
 		Path picturePath = Paths.get("student-image").resolve(pictureStudentName).toAbsolutePath();
@@ -523,12 +485,10 @@ public class StudentController {
 	@GetMapping("/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}")
 	public GrupalCoursePurchaseOperationResult grupalCourseTransaction(@PathVariable Double grupalCourseCost,
 			@PathVariable Long teacherId, @PathVariable Long studentId) {
+		
 		GrupalCoursePurchaseOperationResult grupalCoursePurchaseOperationResult = new GrupalCoursePurchaseOperationResult();
 		Double grupalCourseCostDouble = grupalCourseCost;
 		Double operationValue = (double) 0;
-		System.out.println("valor del curso grupal " + grupalCourseCostDouble);
-		System.out.println("id profesor " + teacherId);
-		System.out.println("id estudiante " + studentId);
 
 		TeacherEntity teacherFound = teacherService.findTeacherById(teacherId);
 		StudentEntity studentFound = studentService.findStudent(studentId);
@@ -545,26 +505,15 @@ public class StudentController {
 		} else if (teacherProfile.equals("Gran Master")) {
 			operationValue = (double) 17;
 		}
-		System.out.println("valor del porcentaje para mittu " + operationValue);
 
 		Double moneyForPlataform = (grupalCourseCostDouble * operationValue) / 100;
-		System.out.println("Valor para la plataforma " + moneyForPlataform);
 		Double moneyForTeacher = (grupalCourseCostDouble - moneyForPlataform);
-		System.out.println("Valor para el profesor " + moneyForTeacher);
 		Double actualMoneyForTeacher = teacherFound.getMoney();
-		System.out.println("Dinero actual del profesor " + actualMoneyForTeacher);
 		Double actualMoneyForStudent = studentFound.getMoney();
-		System.out.println("Dinero actual del estudiante " + actualMoneyForStudent);
 		Double newMoneyForTeacher = actualMoneyForTeacher + moneyForTeacher;
-		System.out.println("Dinero nuevo del profesor " + newMoneyForTeacher);
 		Double newMoneyForStudent = actualMoneyForStudent - grupalCourseCostDouble;
-		System.out.println("Dinero nuevo del estudiante " + newMoneyForStudent);
-
 		Double actualMoneyForAdministraitor = userService.getAdministraitorMoney();
-		System.out.println("Dinero actual del administrador " + actualMoneyForAdministraitor);
-
 		Double newMoneyForAdministrator = actualMoneyForAdministraitor + moneyForPlataform;
-		System.out.println("Dinero nuevo del administrador " + newMoneyForAdministrator);
 
 		studentService.setStudentMoney(newMoneyForStudent, studentId);
 		userService.setPlataformMoney(newMoneyForAdministrator);

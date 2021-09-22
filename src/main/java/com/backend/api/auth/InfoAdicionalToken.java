@@ -32,15 +32,9 @@ public class InfoAdicionalToken implements TokenEnhancer {
 		
 		
 		Long idUser = usuario.getId();
-		System.out.println("id del usuario " + idUser);
-		System.out.println("usuario id"+ idUser );
 		Long idTeacher = usuarioService.findTeacherByUserId(idUser);
 		Long idStudent = usuarioService.findStudentByUserId(idUser);
 		Long idAdmin = usuarioService.findAdminId();
-		System.out.println("student id"+ idStudent );
-		System.out.println("teacher id"+ idTeacher );
-		System.out.println("admin id"+ idAdmin );
-
 	
 		info.put("teacherId", idTeacher);
 		info.put("studentId", idStudent);
@@ -49,8 +43,6 @@ public class InfoAdicionalToken implements TokenEnhancer {
 		
 
 		((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
-		
-		System.out.println("token final " + accessToken);
 
 		return accessToken;
 	}
