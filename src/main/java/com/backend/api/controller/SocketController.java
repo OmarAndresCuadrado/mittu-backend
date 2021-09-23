@@ -36,8 +36,6 @@ public class SocketController {
 
 	private String[] colores = { "red", "green", "blue", "magenta", "purple", "orange" };
 
-	// Hacer un socket solamente para recibir los cursos de cada estudiante
-
 	@MessageMapping("/teacher/socket")
 	@SendTo("/topic/teacher/socket")
 	@Transactional

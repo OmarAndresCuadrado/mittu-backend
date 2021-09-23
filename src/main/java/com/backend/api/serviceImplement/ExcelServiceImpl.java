@@ -227,32 +227,32 @@ public class ExcelServiceImpl implements IExcelInterface {
 
 			cellGeneral = rowGeneral.createCell(2);
 			cellGeneral.setCellValue(detail.getDuration());
-			sheetGeneral.autoSizeColumn(3);
+			sheetGeneral.autoSizeColumn(2);
 
 			cellGeneral = rowGeneral.createCell(3);
 			cellGeneral.setCellValue(detail.getStudentPayment());
-			sheetGeneral.autoSizeColumn(4);
+			sheetGeneral.autoSizeColumn(3);
 
 			cellGeneral = rowGeneral.createCell(4);
 			cellGeneral.setCellValue(detail.getPlataformEarning());
-			sheetGeneral.autoSizeColumn(5);
+			sheetGeneral.autoSizeColumn(4);
 
 			cellGeneral = rowGeneral.createCell(5);
 			cellGeneral.setCellValue(detail.getTeacherEarning());
-			sheetGeneral.autoSizeColumn(6);
+			sheetGeneral.autoSizeColumn(5);
 
 			cellGeneral = rowGeneral.createCell(6);
 			cellGeneral.setCellValue(detail.getStudentName());
-			sheetGeneral.autoSizeColumn(7);
+			sheetGeneral.autoSizeColumn(6);
 
 			cellGeneral = rowGeneral.createCell(7);
 			cellGeneral.setCellValue(detail.getTeacherName());
-			sheetGeneral.autoSizeColumn(8);
+			sheetGeneral.autoSizeColumn(7);
 
 			cellGeneral = rowGeneral.createCell(8);
 			cellGeneral.setCellValue(detail.getFechaDeCreacion());
 			cellGeneral.setCellStyle(cellStyle);
-			sheetGeneral.autoSizeColumn(9);
+			sheetGeneral.autoSizeColumn(8);
 
 		}
 		
