@@ -38,10 +38,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{idStudent}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.GET, "/api/student/transfer/{money}/{studentId}").hasRole("STUDENT")
 				.antMatchers(HttpMethod.POST, "/api/student/upload/image").hasRole("STUDENT")
-				.antMatchers(HttpMethod.GET,
-						"/api/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}")
-				.hasRole("STUDENT").antMatchers(HttpMethod.GET, "/api/student/get/class-details/{studentId}")
-				.hasRole("STUDENT")
+				.antMatchers(HttpMethod.GET, "/api/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}/{grupalCourseId}").hasRole("STUDENT")
+				.antMatchers(HttpMethod.GET, "/api/student/get/class-details/{studentId}").hasRole("STUDENT")
 
 				// Endpoints feedback
 				.antMatchers(HttpMethod.POST, "/api/feed-back").hasRole("STUDENT")
@@ -63,6 +61,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/api/teacher/post/califaction/{idTeacher}").hasRole("TEACHER")
 				.antMatchers(HttpMethod.POST, "/api/teacher/post/profile").hasRole("ADMIN")
 				.antMatchers(HttpMethod.GET, "/api/teacher/get/class-details/{teachertId}").hasRole("TEACHER")
+				.antMatchers(HttpMethod.GET, "/api/grupal/course/set/new/money/teacher/{idTeacher}/{idGrupalCourse}").hasRole("TEACHER")
+				
 
 				// Endpoints subjects
 				.antMatchers(HttpMethod.POST, "/api/subject").hasRole("ADMIN")
@@ -131,6 +131,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/retirement/excel").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/student/getMoney/{studentId}").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/teacher/{id}").permitAll().antMatchers("/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/api/test/**").permitAll()
 
 				.anyRequest().authenticated().and().cors().configurationSource(corsConfigurationSource());
 	}

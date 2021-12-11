@@ -84,6 +84,8 @@ public class TeacherEntity implements Serializable {
 
 	private String city;
 
+	private String deparament;
+
 	@NotEmpty(message = "no puede estar vacio")
 	@Size(min = 12, max = 50, message = "el tamaño tiene que estar entre 12 y 50")
 	@Email(message = "no es una dirección de correo bien formada")
@@ -333,6 +335,14 @@ public class TeacherEntity implements Serializable {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getDeparament() {
+		return deparament;
+	}
+
+	public void setDeparament(String deparament) {
+		this.deparament = deparament;
 	}
 
 	/**

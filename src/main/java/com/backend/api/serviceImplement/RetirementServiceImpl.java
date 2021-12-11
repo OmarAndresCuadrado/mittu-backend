@@ -6,11 +6,13 @@ import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.dao.IRetirementDao;
 import com.backend.api.entity.RetirementEntity;
@@ -64,15 +66,15 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 
 	@Override
 	@Transactional
-	public void sentEmailRetirement(String idReference, Long idTeacher, String accountDetails) {
+	public void sentEmailRetirement(String idReference, Long idTeacher, MultipartFile accountInformation) {
 		TeacherEntity teacherFound = teacherService.findTeacherById(idTeacher);
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		String getFileExtention = FilenameUtils.getExtension(accountInformation.getOriginalFilename());
 		String to = "mittuoficial@gmail.com";
 		String subject = "Solicitud de retiro de fondos del docente " +  teacherFound.getName().concat(" " + teacherFound.getLastName()) + ", Id de referencia: " + idReference ;
-		String emailBody = "Detalles para realizar la transferencia: \n" + "\n" + "\n" + accountDetails;
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		String emailBody = "Detalles para realizar la transferencia (Adjunto)";
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
-
 		mailSender.setUsername("mittuoficial@gmail.com");
 		mailSender.setPassword("zatjbjbavvsejthj");
 
@@ -90,6 +92,7 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 			helper.setTo(to);
 			helper.setSubject(subject); 
 			helper.setText(emailBody);
+			helper.addAttachment("DetallesDeCuenta.".concat(getFileExtention), accountInformation);
 			mailSender.send(message);
 			
 		} catch (MessagingException e) {
@@ -99,15 +102,15 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 
 	@Override
 	@Transactional
-	public void sentEmailForChangeStateRetirement(String idReference, Long idTeacher) {
+	public void sentEmailForChangeStateRetirement(String idReference, Long idTeacher, MultipartFile paymentSupport) {
 		TeacherEntity teacherFound = teacherService.findTeacherById(idTeacher);
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		String getFileExtention = FilenameUtils.getExtension(paymentSupport.getOriginalFilename());
 		String to = teacherFound.getEmail();
 		String subject = "Se ha realizado con exito el pago de la transacción " +  idReference;
 		String emailBody = "Se ha realizado exitosamente la transferencia de fondos a tu cuenta bancaria.";
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
-
 		mailSender.setUsername("mittuoficial@gmail.com");
 		mailSender.setPassword("zatjbjbavvsejthj");
 
@@ -125,6 +128,7 @@ public class RetirementServiceImpl implements IRetirementServiceInterface {
 			helper.setTo(to);
 			helper.setSubject(subject);
 			helper.setText(emailBody);
+			helper.addAttachment("SoporteDeTransferencia.".concat(getFileExtention), paymentSupport);
 			mailSender.send(message);
 			
 		} catch (MessagingException e) {

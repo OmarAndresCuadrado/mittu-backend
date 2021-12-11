@@ -2,6 +2,8 @@ package com.backend.api.serviceInterface;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.backend.api.entity.RetirementEntity;
 
 public interface IRetirementServiceInterface {
@@ -18,8 +20,8 @@ public interface IRetirementServiceInterface {
 	
 	public void updateRetirementState(String retirementId);
 	
-	public void sentEmailRetirement(String idReference, Long idTeacher, String accountDetails);
+	public void sentEmailRetirement(String idReference, Long idTeacher, MultipartFile transferInformation);
 	
-	public void sentEmailForChangeStateRetirement(String idReference, Long idTeacher);
+	public void sentEmailForChangeStateRetirement(String idReference, Long idTeacher, MultipartFile paymentSupport);
 		
 }

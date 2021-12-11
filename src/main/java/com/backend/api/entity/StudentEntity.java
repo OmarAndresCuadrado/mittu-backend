@@ -74,6 +74,8 @@ public class StudentEntity implements Serializable {
 	@Column(unique = true)
 	private String email;
 
+	private String deparament;
+
 	@NotNull(message = "no puede estar vacio")
 	@Column(name = "fecha_de_creacion")
 	@Temporal(TemporalType.DATE)
@@ -230,6 +232,14 @@ public class StudentEntity implements Serializable {
 
 	public void setPicture(String picture) {
 		this.picture = picture;
+	}
+
+	public String getDeparament() {
+		return deparament;
+	}
+
+	public void setDeparament(String deparament) {
+		this.deparament = deparament;
 	}
 
 	/**

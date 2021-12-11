@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.CourseEntity;
 import com.backend.api.entity.DetailsEntity;
+import com.backend.api.entity.GrupalCourseEntity;
 import com.backend.api.entity.GrupalCoursePurchaseOperationResult;
 import com.backend.api.entity.StudentEntity;
 import com.backend.api.entity.TeacherEntity;
@@ -50,6 +51,7 @@ import com.backend.api.entity.TimeEntity;
 import com.backend.api.entity.Usuario;
 import com.backend.api.serviceInterface.ICourseServiceInterface;
 import com.backend.api.serviceInterface.IDetailDaoServiceInterface;
+import com.backend.api.serviceInterface.IGrupalCourseServiceInterface;
 import com.backend.api.serviceInterface.IStudentServiceInterface;
 import com.backend.api.serviceInterface.ITeacherServiceInterface;
 import com.backend.api.serviceInterface.IUsuarioInterface;
@@ -60,6 +62,9 @@ import com.backend.api.serviceInterface.IUsuarioInterface;
 public class StudentController {
 
 	private final Logger log = LoggerFactory.getLogger(StudentController.class);
+
+	@Autowired
+	private IGrupalCourseServiceInterface grupalCourseService;
 
 	@Autowired
 	IStudentServiceInterface studentService;
@@ -159,6 +164,7 @@ public class StudentController {
 			String apellido = studentEntity.getLastName();
 			String email = studentEntity.getEmail();
 			String city = studentEntity.getCity();
+			String deparament = studentEntity.getDeparament();
 			userStudent.setUsername(username);
 			userStudent.setPassword(password);
 			userStudent.setEnabled(true);
@@ -182,6 +188,7 @@ public class StudentController {
 			studentEntity.setCity(city);
 			studentEntity.setMoney(Double.valueOf(0));
 			studentEntity.setTermsAndConditions(true);
+			studentEntity.setDeparament(deparament);
 			studentCreated = studentService.saveStudent(studentEntity);
 			usuarioService.findStudentCreatedAndSetRole(stuendtId);
 			studentService.sentEmailToStudent(studentEntity, cleanPassword);
@@ -482,16 +489,59 @@ public class StudentController {
 		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
 	}
 
-	@GetMapping("/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}")
+//	@GetMapping("/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}")
+//	public GrupalCoursePurchaseOperationResult grupalCourseTransaction(@PathVariable Double grupalCourseCost,
+//			@PathVariable Long teacherId, @PathVariable Long studentId) {
+//		
+//		GrupalCoursePurchaseOperationResult grupalCoursePurchaseOperationResult = new GrupalCoursePurchaseOperationResult();
+//		Double grupalCourseCostDouble = grupalCourseCost;
+//		Double operationValue = (double) 0;
+//
+//		TeacherEntity teacherFound = teacherService.findTeacherById(teacherId);
+//		StudentEntity studentFound = studentService.findStudent(studentId);
+//		String teacherProfile = teacherFound.getProfile();
+//
+//		if (teacherProfile.equals("Amateur")) {
+//			operationValue = (double) 30;
+//		} else if (teacherProfile.equals("Junior")) {
+//			operationValue = (double) 25;
+//		} else if (teacherProfile.equals("Senior")) {
+//			operationValue = (double) 22;
+//		} else if (teacherProfile.equals("Master")) {
+//			operationValue = (double) 20;
+//		} else if (teacherProfile.equals("Gran Master")) {
+//			operationValue = (double) 17;
+//		}
+//
+//		Double moneyForPlataform = (grupalCourseCostDouble * operationValue) / 100;
+//		Double moneyForTeacher = (grupalCourseCostDouble - moneyForPlataform);
+//		Double actualMoneyForTeacher = teacherFound.getMoney();
+//		Double actualMoneyForStudent = studentFound.getMoney();
+//		Double newMoneyForTeacher = actualMoneyForTeacher + moneyForTeacher;
+//		Double newMoneyForStudent = actualMoneyForStudent - grupalCourseCostDouble;
+//		Double actualMoneyForAdministraitor = userService.getAdministraitorMoney();
+//		Double newMoneyForAdministrator = actualMoneyForAdministraitor + moneyForPlataform;
+//
+//		studentService.setStudentMoney(newMoneyForStudent, studentId);
+//		userService.setPlataformMoney(newMoneyForAdministrator);
+//		teacherService.setTeacherMoney(newMoneyForTeacher, teacherId);
+//		grupalCoursePurchaseOperationResult.setMoneyForTeacher(moneyForTeacher.toString());
+//		grupalCoursePurchaseOperationResult.setMoneyForPlataform(moneyForPlataform.toString());
+//
+//		return grupalCoursePurchaseOperationResult;
+//	}
+
+	@GetMapping("/student/teacher/set/grupalCourse/{grupalCourseCost}/{teacherId}/{studentId}/{grupalCourseId}")
 	public GrupalCoursePurchaseOperationResult grupalCourseTransaction(@PathVariable Double grupalCourseCost,
-			@PathVariable Long teacherId, @PathVariable Long studentId) {
-		
+			@PathVariable Long teacherId, @PathVariable Long studentId, @PathVariable Long grupalCourseId) {
+
 		GrupalCoursePurchaseOperationResult grupalCoursePurchaseOperationResult = new GrupalCoursePurchaseOperationResult();
 		Double grupalCourseCostDouble = grupalCourseCost;
 		Double operationValue = (double) 0;
 
 		TeacherEntity teacherFound = teacherService.findTeacherById(teacherId);
 		StudentEntity studentFound = studentService.findStudent(studentId);
+		GrupalCourseEntity grupalCourseFound = grupalCourseService.findGrupalCourseById(grupalCourseId);
 		String teacherProfile = teacherFound.getProfile();
 
 		if (teacherProfile.equals("Amateur")) {
@@ -508,16 +558,18 @@ public class StudentController {
 
 		Double moneyForPlataform = (grupalCourseCostDouble * operationValue) / 100;
 		Double moneyForTeacher = (grupalCourseCostDouble - moneyForPlataform);
-		Double actualMoneyForTeacher = teacherFound.getMoney();
+		Double actualMoneyOfCourse = grupalCourseFound.getMoneyToBePaid();
 		Double actualMoneyForStudent = studentFound.getMoney();
-		Double newMoneyForTeacher = actualMoneyForTeacher + moneyForTeacher;
 		Double newMoneyForStudent = actualMoneyForStudent - grupalCourseCostDouble;
 		Double actualMoneyForAdministraitor = userService.getAdministraitorMoney();
 		Double newMoneyForAdministrator = actualMoneyForAdministraitor + moneyForPlataform;
+		Integer numberOfStudentsSubscribed = grupalCourseFound.getStudentSubscribed();
 
 		studentService.setStudentMoney(newMoneyForStudent, studentId);
 		userService.setPlataformMoney(newMoneyForAdministrator);
-		teacherService.setTeacherMoney(newMoneyForTeacher, teacherId);
+		grupalCourseFound.setMoneyToBePaid(actualMoneyOfCourse + moneyForTeacher);
+		grupalCourseFound.setStudentSubscribed(numberOfStudentsSubscribed + 1);
+		grupalCourseService.saveGrupalCourse(grupalCourseFound);
 		grupalCoursePurchaseOperationResult.setMoneyForTeacher(moneyForTeacher.toString());
 		grupalCoursePurchaseOperationResult.setMoneyForPlataform(moneyForPlataform.toString());
 

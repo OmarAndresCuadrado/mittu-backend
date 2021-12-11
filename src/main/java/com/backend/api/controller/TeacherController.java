@@ -152,6 +152,7 @@ public class TeacherController {
 			String apellido = teacherEntity.getLastName();
 			String email = teacherEntity.getEmail();
 			String city = teacherEntity.getCity();
+			String deparament = teacherEntity.getDeparament();
 			userTeacher.setCity(city);
 			userTeacher.setUsername(username);
 			userTeacher.setPassword(password);
@@ -186,6 +187,7 @@ public class TeacherController {
 			teacherEntity.setEducation("");
 			teacherEntity.setHourCost(Double.valueOf(0));
 			teacherEntity.setPicture("");
+			teacherEntity.setDeparament(deparament);
 			teacherCreated = teacherService.saveTeacher(teacherEntity);
 			usuarioService.findTeacherCreatedAndSetRole(teacherId);
 			teacherService.setTeacherTime(0, teacherCreated.getId());

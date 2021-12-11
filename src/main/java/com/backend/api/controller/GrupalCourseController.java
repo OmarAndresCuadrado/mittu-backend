@@ -36,7 +36,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.GrupalCourseEntity;
 import com.backend.api.entity.GrupalCourseInscriptionEntity;
+import com.backend.api.entity.TeacherEntity;
 import com.backend.api.serviceImplement.GrupalCourseServiceImpl;
+import com.backend.api.serviceInterface.ITeacherServiceInterface;
 
 @CrossOrigin(origins = { "*" })
 @RestController
@@ -47,6 +49,9 @@ public class GrupalCourseController {
 
 	@Autowired
 	private GrupalCourseServiceImpl grupalCourseService;
+	
+	@Autowired
+	private ITeacherServiceInterface teacherService;
 
 	@GetMapping("/grupal/course")
 	public List<GrupalCourseEntity> listOfGrupalCourse() {
@@ -60,8 +65,11 @@ public class GrupalCourseController {
 
 	@PostMapping("/grupal/course")
 	public GrupalCourseEntity saveGrupalCourse(@RequestBody GrupalCourseEntity grupalCourseEntity) {
+		grupalCourseEntity.setAlreadyPaid(false);
+		grupalCourseEntity.setClasesDone(0);
+		grupalCourseEntity.setMoneyToBePaid((double) 0);
+		grupalCourseEntity.setStudentSubscribed(0);
 		return grupalCourseService.saveGrupalCourse(grupalCourseEntity);
-
 	}
 
 	@PutMapping("/grupal/course/{id}")
@@ -95,16 +103,21 @@ public class GrupalCourseController {
 	}
 
 	@PostMapping("/grupal/course/create/inscription")
-	public void createInscriptionToGrupalCourse(@RequestBody GrupalCourseInscriptionEntity params) {
+	public boolean createInscriptionToGrupalCourse(@RequestBody GrupalCourseInscriptionEntity params) {
+
+		boolean operationIsValid = false;
 
 		try {
 			this.grupalCourseService.createInscriptionToGrupalCourse(params.getCourseId(), params.getStudentId());
-			
-		}  catch (DataAccessException e) {
-			log.info(executionTime() + "-Error controlado se ha intendo inscribirse a un curso grupal al cual ya se encuentra inscrito");
+			operationIsValid = true;
 
+		} catch (DataAccessException e) {
+			log.info(executionTime()
+					+ "-Error controlado se ha intendo inscribirse a un curso grupal al cual ya se encuentra inscrito");
+			operationIsValid = false;
 		}
-		
+
+		return operationIsValid;
 
 	}
 
@@ -185,6 +198,34 @@ public class GrupalCourseController {
 
 		return new ResponseEntity<Resource>(resource, cabecera, HttpStatus.OK);
 	}
+	
+	@GetMapping("/grupal/course/set/new/money/teacher/{idTeacher}/{idGrupalCourse}")
+	public void setNewMoneyAndCoursePaidForTeacher (@PathVariable Long idTeacher, @PathVariable Long idGrupalCourse) {
+		
+		Double actualMoneyOfTeacher;
+		Double moneyOfTheGrupalCourse;
+		Double newMoneyForTeacher;
+		
+		TeacherEntity teacherFound = new TeacherEntity();
+		GrupalCourseEntity grupalCourseFound = new GrupalCourseEntity();
+		
+		teacherFound = teacherService.findTeacherById(idTeacher);
+		grupalCourseFound = grupalCourseService.findGrupalCourseById(idGrupalCourse);
+		
+		actualMoneyOfTeacher = teacherFound.getMoney();
+		moneyOfTheGrupalCourse = grupalCourseFound.getMoneyToBePaid();
+		newMoneyForTeacher = (actualMoneyOfTeacher + moneyOfTheGrupalCourse);
+		teacherFound.setMoney(newMoneyForTeacher);
+		
+		teacherService.saveTeacher(teacherFound);
+		
+		grupalCourseFound.setAlreadyPaid(true);
+		grupalCourseService.saveGrupalCourse(grupalCourseFound);
+		
+		
+		
+	}
+	
 
 	public String executionTime() {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT");

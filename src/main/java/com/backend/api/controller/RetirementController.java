@@ -21,10 +21,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.api.entity.DetailsEntity;
-import com.backend.api.entity.EmailRetirementToSentDto;
 import com.backend.api.entity.ExcelClass;
 import com.backend.api.entity.GrupalCoursePurchaseEntity;
 import com.backend.api.entity.RetirementEntity;
@@ -144,15 +145,17 @@ public class RetirementController {
 	}
 
 	@PostMapping("/retirement/new/send/email")
-	public void sentEmailForNewRetirement(@RequestBody EmailRetirementToSentDto emailRetirementToSentDto) {
-		retirementService.sentEmailRetirement(emailRetirementToSentDto.getIdReference(),
-				emailRetirementToSentDto.getIdTeacher(), emailRetirementToSentDto.getAccountDetails());
+	public void sentEmailForNewRetirement(@RequestParam("idReference") String idReference,
+			@RequestParam("idTeacher") String idTeacher,
+			@RequestParam("accountInformation") MultipartFile accountInformation) {
+		retirementService.sentEmailRetirement(idReference, Long.valueOf(idTeacher), accountInformation);
 	}
 
 	@PostMapping("/retirement/state/send/email")
-	public void sentEmailForChangeStateRetirement(@RequestBody EmailRetirementToSentDto emailRetirementToSentDto) {
-		retirementService.sentEmailForChangeStateRetirement(emailRetirementToSentDto.getIdReference(),
-				emailRetirementToSentDto.getIdTeacher());
+	public void sentEmailForChangeStateRetirement(@RequestParam("idReference") String idReference,
+			@RequestParam("idTeacher") String idTeacher,
+			@RequestParam("paymentSupport") MultipartFile paymentSupport) {
+		retirementService.sentEmailForChangeStateRetirement(idReference, Long.valueOf(idTeacher), paymentSupport);
 	}
 
 	public String executionTime() {

@@ -41,8 +41,22 @@ public class GrupalCourseEntity implements Serializable {
 	private String Description;
 
 	private String urlMeet;
-	
+
 	private Double price;
+
+	private Integer totalClases;
+
+	private Integer clasesDone;
+
+	private Double moneyToBePaid;
+
+	private boolean alreadyPaid;
+
+	private Integer studentSubscribed;
+
+	private String initialDateCourse;
+
+	private String findalDateCourse;
 
 	@NotNull(message = "no puede estar vacio")
 	@Column(name = "fecha_creacion")
@@ -143,6 +157,61 @@ public class GrupalCourseEntity implements Serializable {
 		this.price = price;
 	}
 
+	public Integer getTotalClases() {
+		return totalClases;
+	}
+
+	public void setTotalClases(Integer totalClases) {
+		this.totalClases = totalClases;
+	}
+
+	public Integer getClasesDone() {
+		return clasesDone;
+	}
+
+	public void setClasesDone(Integer clasesDone) {
+		this.clasesDone = clasesDone;
+	}
+
+	public Double getMoneyToBePaid() {
+		return moneyToBePaid;
+	}
+
+	public void setMoneyToBePaid(Double moneyToBePaid) {
+		this.moneyToBePaid = moneyToBePaid;
+	}
+
+	public boolean isAlreadyPaid() {
+		return alreadyPaid;
+	}
+
+	public void setAlreadyPaid(boolean alreadyPaid) {
+		this.alreadyPaid = alreadyPaid;
+	}
+
+	public Integer getStudentSubscribed() {
+		return studentSubscribed;
+	}
+
+	public void setStudentSubscribed(Integer studentSubscribed) {
+		this.studentSubscribed = studentSubscribed;
+	}
+
+	public String getInitialDateCourse() {
+		return initialDateCourse;
+	}
+
+	public void setInitialDateCourse(String initialDateCourse) {
+		this.initialDateCourse = initialDateCourse;
+	}
+
+	public String getFindalDateCourse() {
+		return findalDateCourse;
+	}
+
+	public void setFindalDateCourse(String findalDateCourse) {
+		this.findalDateCourse = findalDateCourse;
+	}
 
 	/**
 	 * 
